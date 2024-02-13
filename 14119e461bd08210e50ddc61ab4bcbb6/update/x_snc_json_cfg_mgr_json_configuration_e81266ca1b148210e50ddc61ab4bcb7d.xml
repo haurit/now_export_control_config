@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_snc_json_cfg_mgr_json_configuration">
+    <x_snc_json_cfg_mgr_json_configuration action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <configuration><![CDATA[var oCfg = {
+	'data_classes': ['Confidential', 'Personally identifiable information', 'Restricted'], // names of the data classes to be considered (empty = all classes)
+	'exception_groups': ['Service Desk'], // group member can always export all fields
+	'no_export_groups': [''], // group member can never export data
+	'exception_roles': ['admin', 'metric_admin'], // role member can always export all fields
+	'no_export_roles': ['snc_external'], // role member can never export data
+	'table_exception_roles': {
+		'incident': {
+			'incident_manager': ['caller_id', 'opened_by'], // role incident_manager: can export these fields
+			'problem_admin': ['all'], // role problem_admin: can export all fields
+		}, // incident table
+		'incident_task': {
+			'incident_manager': ['caller_id', 'opened_by'], // role incident_manager: can export these fields
+		}, // incident task table
+		'change_request': {
+			'change_manager': ['requested_by', 'opened_by'], // role change_manager: can export these fields
+		}, // change table
+	} // table exception roles
+}; // special config overrides]]></configuration>
+        <name>ExportControlConfiguration</name>
+        <number>OCFG_ECC_00000001</number>
+        <root>true</root>
+        <sys_class_name>x_snc_json_cfg_mgr_json_configuration</sys_class_name>
+        <sys_created_by>tom.hauri</sys_created_by>
+        <sys_created_on>2024-02-13 07:41:11</sys_created_on>
+        <sys_id>e81266ca1b148210e50ddc61ab4bcb7d</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>ExportControlConfiguration</sys_name>
+        <sys_package display_value="Export Control Configuration" source="14119e461bd08210e50ddc61ab4bcbb6">14119e461bd08210e50ddc61ab4bcbb6</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Export Control Configuration">14119e461bd08210e50ddc61ab4bcbb6</sys_scope>
+        <sys_update_name>x_snc_json_cfg_mgr_json_configuration_e81266ca1b148210e50ddc61ab4bcb7d</sys_update_name>
+        <sys_updated_by>tom.hauri</sys_updated_by>
+        <sys_updated_on>2024-02-13 07:42:24</sys_updated_on>
+    </x_snc_json_cfg_mgr_json_configuration>
+</record_update>

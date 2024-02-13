@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.ExportControlConfiguration</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description>Configure export controls to prevent sensitive data from being extracted from lists.</description>
+        <name>ExportControlConfiguration</name>
+        <script><![CDATA[var ExportControlConfiguration = Class.create();
+ExportControlConfiguration.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+
+	bLog: false,
+	_getCfg: new x_snc_json_cfg_mgr.getCfg('ExportControlConfiguration'), // Exception configuration
+	_gtArray: new global.GlobalToolsArray(),
+	_gtTable: new global.GlobalToolsTable(),
+
+	validateList: function () {
+		var sTableName = this.getParameter('sysparm_table');
+		var sView = this.getParameter('sysparm_view');
+		var sUserId = this._getUserId();
+		try {
+			var gsUser = gs.getUser().getUserByID(sUserId);
+			var bHasNoExportRole = this._hasUserExceptionRole(gsUser, 'no_export_roles');
+			var bIsInNoExportGroup = this._isUserInExceptionGroup(sUserId, 'no_export_groups');
+			if ((bIsInNoExportGroup) || (bHasNoExportRole)) {
+				if (this.bLog) {
+					gs.info('ExportControlConfiguration start sTableName: ' + sTableName + ' sView: ' + sView + ' sUserId: ' + sUserId + ' bHasNoExportRole: ' + bHasNoExportRole + ' bIsInNoExportGroup: ' + bIsInNoExportGroup);
+				} // if log
+				return gs.getMessage('ExportControlConfiguration_ExportNeverAllowed');
+			} // if not export group
+			var bHasExceptionRole = this._hasUserExceptionRole(gsUser, 'exception_roles');
+			var bIsInExceptionGroup = this._isUserInExceptionGroup(sUserId, 'exception_groups');
+			if (this.bLog) {
+				gs.info('ExportControlConfiguration start sTableName: ' + sTableName + ' sView: ' + sView + ' sUserId: ' + sUserId + ' bHasExceptionRole: ' + bHasExceptionRole + ' bIsInExceptionGroup: ' + bIsInExceptionGroup);
+			} // if log
+			if ((bHasExceptionRole) || (bIsInExceptionGroup)) {
+				return '';
+			} // if has exception role or group
+			if ((sTableName) && (gs.tableExists(sTableName))) {
+				var grTable = new GlideRecord(sTableName);
+				var aExceptionFields = [];
+				var aTableExceptionRoles = this._getUserTableExceptionRoles(gsUser, Object.keys(this._getCfg.getValue('table_exception_roles/' + sTableName, [])));
+				if (this._gtArray.isValidArray(aTableExceptionRoles)) {
+					aTableExceptionRoles.forEach(function (sTableExceptionRole) {
+						var aExceptionFieldsTmp = this._getCfg.getValue('table_exception_roles/' + sTableName + '/' + sTableExceptionRole, []);
+						if (this._gtArray.isValidArray(aExceptionFieldsTmp)) {
+							aExceptionFieldsTmp.forEach(function (sExceptionFieldTmp) {
+								if (aExceptionFields.indexOf(sExceptionFieldTmp) == -1) {
+									aExceptionFields.push(sExceptionFieldTmp);
+								} // if not yet added
+							}); // each role field exception
+						} // if tmp field exceptions
+					}, this); // each exepction role the user is part of
+				} // if exception role
+				if (aExceptionFields.indexOf('all') != -1) {
+					if (this.bLog) {
+						gs.info('ExportControlConfiguration user has table role exception for all fields: ' + sTableName + ' sView: ' + sView + ' sUserId: ' + sUserId);
+					} // if log
+					return '';
+				} // if exception for all fields
+				var sViewQuery = (sView) ? '^view.name=' + sView : '^view=Default view';
+				var grList = new GlideRecord('sys_ui_list');
+				grList.addEncodedQuery('name=' + sTableName + sViewQuery + '^sys_userISEMPTY^ORsys_user=' + gs.getUserID());
+				grList.orderByDesc(['sys_user']);
+				grList.setLimit(1);
+				grList.query();
+				if (this.bLog) {
+					gs.info('ExportControlConfiguration get list sTableName: ' + sTableName + ' sView: ' + sView + ' sUserId: ' + sUserId + ' Query: ' + grList.getEncodedQuery());
+				} // if log
+				if (grList.next()) {
+					var aColumns = [];
+					var aTableNames = this._gtTable.getTableHierarchy(sTableName);
+					var grDataClass = new GlideRecord('m2m_dictionary_dataclass');
+					if ((this.oConfig.hasOwnProperty('data_classes')) && (this.oConfig['data_classes']) && (Array.isArray(this.oConfig['data_classes'])) && (this.oConfig['data_classes'].length > 0)) {
+						grDataClass.addEncodedQuery('data_class.nameIN' + this.oConfig['data_classes'].join(','));
+					} // if data classes
+					grDataClass.addEncodedQuery('sys_dictionary.nameIN' + aTableNames.join(','));
+					if (this._gtArray.isValidArray(aExceptionFields)) {
+						grDataClass.addEncodedQuery('sys_dictionary.elementNOT IN' + aExceptionFields.join(','));
+					} // if exception fields
+					grDataClass.query();
+					while (grDataClass.next()) {
+						aColumns.push(String(grDataClass.sys_dictionary.element));
+					} // while data class
+					var grListColumns = new GlideRecord('sys_ui_list_element');
+					grListColumns.addEncodedQuery('list_id=' + grList.getUniqueValue() + '^elementIN' + aColumns.join(','));
+					grListColumns.query();
+					var aClassifiedFields = [], sField = '', sFieldLabel = '';
+					while (grListColumns.next()) {
+						sField = grListColumns.getValue('element');
+						aClassifiedFields.push(this._gtTable.getFieldLabel(grTable, sField));
+					} // if list columns
+					if (this.bLog) {
+						gs.info('ExportControlConfiguration return result sTableName: ' + sTableName + ' sView: ' + sView + ' sUserId: ' + sUserId + ' sSysId: ' + grList.getUniqueValue() + ' aTableNames: ' + aTableNames + ' aColumns: ' + aColumns + ' query for columns: ' + grListColumns.getEncodedQuery() + ' column count: ' + grListColumns.getRowCount() + ' classified fields result: ' + aClassifiedFields.join(', '));
+					} // if log
+					if (aClassifiedFields.length > 0) {
+						return gs.getMessage('ExportControlConfiguration_ExportNotAllowed', [aClassifiedFields.join(', ')]);
+					} // if classified fields
+				} else {
+					gs.info('ExportControlConfiguration list not found!');
+				} // if list
+				return '';
+			} else {
+				gs.info('ExportControlConfiguration table not found');
+			} // if table
+		} catch (oEx) {
+			gs.error('ExportControlConfiguration error sTableName: ' + sTableName + ' sView: ' + sView + ' sUserId: ' + sUserId + ' Ex: ' + String(oEx));
+		}
+	}, // function validateList
+
+	_hasUserExceptionRole: function (gsUser, sRoleProperty) {
+		var bHasExplicitRole = false;
+		var aExceptionRoles = this._getCfg.getValue(sRoleProperty, []);
+		if (this._gtArray.isValidArray(aExceptionRoles)) {
+			aExceptionRoles.some(function (sExceptionRole) {
+				if (gsUser.hasRole(sExceptionRole)) {
+					bHasExplicitRole = true;
+					return true;
+				} // if has explicit role
+			}); // each exception role
+		} // if valid exception roles
+		return bHasExplicitRole;
+	}, // function _hasUserExceptionRole
+
+	_getUserTableExceptionRoles: function (gsUser, aExceptionRoles) {
+		var aUserExceptionRoles = [];
+		if (this._gtArray.isValidArray(aExceptionRoles)) {
+			aExceptionRoles.forEach(function (sExceptionRole) {
+				if (gsUser.hasRole(sExceptionRole)) {
+					aUserExceptionRoles.push(sExceptionRole);
+				} // if has explicit role
+			}); // each exception role
+		} // if valid exception roles
+		return aUserExceptionRoles;
+	}, // function _getUserTableExceptionRoles
+
+	_isUserInExceptionGroup: function (sUserId, sGroupProperty) {
+		var aExceptionGroups = this._getCfg.getValue(sGroupProperty, []);
+		if (this._gtArray.isValidArray(aExceptionGroups)) {
+			var grUserGroupMember = new GlideRecord('sys_user_grmember');
+			grUserGroupMember.addEncodedQuery('user=' + sUserId + '^group.nameIN' + aExceptionGroups.join(','));
+			grUserGroupMember.setLimit(1);
+			grUserGroupMember.query();
+			if (grUserGroupMember.hasNext()) {
+				return true;
+			} // if group membership
+		} // if config has exception groups
+		return false;
+	}, // function _isUserInExceptionGroup
+
+	_getUserId: function () {
+		var sUserId = this.getParameter('sysparm_userid');
+		if (!sUserId) {
+			sUserId = gs.getUserID(); // use current session user id
+		} // if not found as parameter
+		return sUserId;
+	}, // function _getUserId
+
+	type: 'ExportControlConfiguration',
+	version: '1.0',
+	author: 'ServiceNow Customer Outcomes, Tom Hauri',
+	email: 'tom.hauri@servicenow.com',
+
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>tom.hauri</sys_created_by>
+        <sys_created_on>2024-02-13 08:16:43</sys_created_on>
+        <sys_id>80aae68a1b548210e50ddc61ab4bcbf8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>ExportControlConfiguration</sys_name>
+        <sys_package display_value="Export Control Configuration" source="14119e461bd08210e50ddc61ab4bcbb6">14119e461bd08210e50ddc61ab4bcbb6</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Export Control Configuration">14119e461bd08210e50ddc61ab4bcbb6</sys_scope>
+        <sys_update_name>sys_script_include_80aae68a1b548210e50ddc61ab4bcbf8</sys_update_name>
+        <sys_updated_by>tom.hauri</sys_updated_by>
+        <sys_updated_on>2024-02-13 08:16:43</sys_updated_on>
+    </sys_script_include>
+</record_update>
