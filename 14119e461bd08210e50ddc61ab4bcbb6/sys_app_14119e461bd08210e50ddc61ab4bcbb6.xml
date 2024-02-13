@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app">
+    <sys_app action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <can_edit_in_studio>true</can_edit_in_studio>
+        <enforce_license>none</enforce_license>
+        <guided_setup_guid/>
+        <hide_on_ui>false</hide_on_ui>
+        <ide_created>DS</ide_created>
+        <installed_as_dependency>false</installed_as_dependency>
+        <js_level>helsinki_es5</js_level>
+        <licensable>true</licensable>
+        <license/>
+        <license_category>none</license_category>
+        <license_definition/>
+        <license_model>none</license_model>
+        <logo>85119e461bd08210e50ddc61ab4bcb7d</logo>
+        <menu/>
+        <name>Export Control Configuration</name>
+        <private>false</private>
+        <restrict_table_access>false</restrict_table_access>
+        <runtime_access_tracking>permissive</runtime_access_tracking>
+        <scope>global</scope>
+        <scoped_administration>false</scoped_administration>
+        <short_description>Configure export controls to prevent sensitive data from being extracted from lists.</short_description>
+        <source>14119e461bd08210e50ddc61ab4bcbb6</source>
+        <store_correlation_id/>
+        <store_url/>
+        <subscription_entitlement/>
+        <sys_class_name>sys_app</sys_class_name>
+        <sys_code/>
+        <sys_created_by>tom.hauri</sys_created_by>
+        <sys_created_on>2024-02-13 06:25:02</sys_created_on>
+        <sys_id>14119e461bd08210e50ddc61ab4bcbb6</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_updated_by>tom.hauri</sys_updated_by>
+        <sys_updated_on>2024-02-13 06:25:05</sys_updated_on>
+        <template/>
+        <trackable>true</trackable>
+        <uninstall_blocked>false</uninstall_blocked>
+        <user_role/>
+        <vendor/>
+        <vendor_prefix/>
+        <version>1.0.0</version>
+    </sys_app>
+    <sys_translated_text action="delete_multiple" query="documentkey=14119e461bd08210e50ddc61ab4bcbb6"/>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes>700000</chunk_size_bytes>
+        <compressed>true</compressed>
+        <content_type>image/png</content_type>
+        <file_name>export_control_config.png</file_name>
+        <hash>9e27f245e72d770095cb20d0a0b104c23ed939823b454a33b5a98f68d8f3593a</hash>
+        <image_height>147</image_height>
+        <image_width>197</image_width>
+        <size_bytes>1666</size_bytes>
+        <size_compressed>1689</size_compressed>
+        <state>available</state>
+        <sys_created_by>tom.hauri</sys_created_by>
+        <sys_created_on>2024-02-13 06:25:05</sys_created_on>
+        <sys_id>85119e461bd08210e50ddc61ab4bcb7d</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_updated_by>tom.hauri</sys_updated_by>
+        <sys_updated_on>2024-02-13 06:25:05</sys_updated_on>
+        <table_name>sys_app</table_name>
+        <table_sys_id>14119e461bd08210e50ddc61ab4bcbb6</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="export_control_config.png" sys_id="85119e461bd08210e50ddc61ab4bcb7d">85119e461bd08210e50ddc61ab4bcb7d</sys_attachment>
+        <sys_created_by>tom.hauri</sys_created_by>
+        <sys_created_on>2024-02-13 06:25:05</sys_created_on>
+        <sys_id>c5119e461bd08210e50ddc61ab4bcb7d</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>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</data>
+        <length>2240</length>
+        <position>1</position>
+        <sys_attachment display_value="export_control_config.png" sys_id="85119e461bd08210e50ddc61ab4bcb7d">85119e461bd08210e50ddc61ab4bcb7d</sys_attachment>
+        <sys_created_by>tom.hauri</sys_created_by>
+        <sys_created_on>2024-02-13 06:25:05</sys_created_on>
+        <sys_id>49119e461bd08210e50ddc61ab4bcb7d</sys_id>
+    </sys_attachment_doc>
+</record_update>
