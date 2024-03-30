@@ -13,10 +13,11 @@
         <mobile_title>Data Classifications</mobile_title>
         <mobile_view_name>Mobile</mobile_view_name>
         <name>data_classification</name>
-        <order>300</order>
+        <order>100</order>
         <override_menu_roles>false</override_menu_roles>
         <query/>
         <report/>
+        <require_confirmation>true</require_confirmation>
         <roles/>
         <sys_class_name>sys_app_module</sys_class_name>
         <sys_created_by>tom.hauri</sys_created_by>
@@ -24,7 +25,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>3f5ae28a1b548210e50ddc61ab4bcbf4</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_name>Data Classifications</sys_name>
         <sys_overrides/>
         <sys_package display_value="Export Control Configuration" source="14119e461bd08210e50ddc61ab4bcbb6">14119e461bd08210e50ddc61ab4bcbb6</sys_package>
@@ -32,7 +33,7 @@
         <sys_scope display_value="Export Control Configuration">14119e461bd08210e50ddc61ab4bcbb6</sys_scope>
         <sys_update_name>sys_app_module_3f5ae28a1b548210e50ddc61ab4bcbf4</sys_update_name>
         <sys_updated_by>tom.hauri</sys_updated_by>
-        <sys_updated_on>2024-02-13 08:16:28</sys_updated_on>
+        <sys_updated_on>2024-02-13 12:37:39</sys_updated_on>
         <timeline_page/>
         <title>Data Classifications</title>
         <uncancelable>false</uncancelable>
