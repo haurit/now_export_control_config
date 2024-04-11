@@ -87,12 +87,14 @@
 				from source control.</li>
 			<li>Manually replace the following code in the&#160;<a href="/now/nav/ui/classic/params/target/sys_ui_context_menu.do%3Fsys_id%3Df13f0041473012003db6d7527c9a71f0" target="_blank">UI Context Menu "Export (XLSX)"</a>&#160;<strong>runContextAction</strong>&#160;function:
 			<p>Old code:</p>
-<code>
+<pre>
 var exportHandler = new ContextMenuExportHandler(g_list,'unload_excel_xlsx');
 exportHandler.exportRecords();
-</code>
+</pre>
 			<p>New code:</p>
-<code>
+<pre>
+// var exportHandler = new ContextMenuExportHandler(g_list,'unload_excel_xlsx');
+// exportHandler.exportRecords();
 try {
 	var gaExportControlCfg = new GlideAjax('ExportControlConfiguration');
 	gaExportControlCfg.addParam('sysparm_name', 'validateLegacyList');
@@ -110,12 +112,12 @@ try {
 } catch (oEx) {
 	alert('Error during export validation: ' + String(oEx));
 } //  end catch
-</code>
+</pre>
 			</li>
-		<li>Add the following Script Condition in the Conditions tab (advanced view) of the &#160;<a href="/now/nav/ui/classic/params/target/sys_declarative_action_assignment.do%3Fsys_id%3D99c2f6b273131010a0a79329faf6a710%26sysparm_view%3Dadvanced" target="_blank">Export"</a>&#160;<strong>Action Assignment</strong>&#160; UXF Client Action:
-		<code>
-		new global.NOWCOExportValidation().isValidList(true, "{{table}}")
-		</code>
+		<li>Add the following&#160;<strong>Script Condition</strong>&#160;in the Conditions tab (advanced view) of the&#160;<a href="/now/nav/ui/classic/params/target/sys_declarative_action_assignment.do%3Fsys_id%3D99c2f6b273131010a0a79329faf6a710%26sysparm_view%3Dadvanced" target="_blank">Action Assignment "Export"</a>&#160;UXF Client Action:
+		<pre>
+		new global.ExportControlConfiguration().validateWorkspaceList("{{table}}")
+		</pre>
 		</li>
 		</ol>
 	</body>
@@ -126,13 +128,13 @@ try {
         <sys_created_by>tom.hauri</sys_created_by>
         <sys_created_on>2024-02-13 06:49:44</sys_created_on>
         <sys_id>0ab6924e1bd08210e50ddc61ab4bcb71</sys_id>
-        <sys_mod_count>7</sys_mod_count>
+        <sys_mod_count>15</sys_mod_count>
         <sys_name>export_control_config_manual</sys_name>
         <sys_package display_value="Export Control Configuration" source="14119e461bd08210e50ddc61ab4bcbb6">14119e461bd08210e50ddc61ab4bcbb6</sys_package>
         <sys_policy/>
         <sys_scope display_value="Export Control Configuration">14119e461bd08210e50ddc61ab4bcbb6</sys_scope>
         <sys_update_name>sys_ui_page_0ab6924e1bd08210e50ddc61ab4bcb71</sys_update_name>
         <sys_updated_by>tom.hauri</sys_updated_by>
-        <sys_updated_on>2024-03-30 14:14:37</sys_updated_on>
+        <sys_updated_on>2024-04-02 09:52:29</sys_updated_on>
     </sys_ui_page>
 </record_update>
